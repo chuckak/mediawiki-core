@@ -126,6 +126,23 @@
 			}
 		}
 
+		// Get current namespaces
+		function getNamespaces() {
+			var namespaces = '',
+				options = mw.user.options.get();
+			for(var opt in options) {
+				if(opt.substring(0,8) === 'searchNs') {
+					if(options[opt] === true) {
+						namespaces += opt.substr(8)+'|';
+					}
+				}
+			}
+			if (namespaces.length > 1) {
+				return namespaces.substring(0, namespaces.length-1);
+			}
+			return 0;
+		}
+
 		// General suggestions functionality for all search boxes
 		searchboxesSelectors = [
 			// Primary searchbox on every page in standard skins
@@ -146,7 +163,7 @@
 						$el.data( 'request', ( new mw.Api() ).get( {
 							action: 'opensearch',
 							search: query,
-							namespace: 0,
+							namespace: getNamespaces(),
 							suggest: ''
 						} ).done( function ( data ) {
 							$el.suggestions( 'suggestions', data[1] );
